@@ -1,4 +1,3 @@
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <linux/can.h>
@@ -123,8 +122,7 @@ void draw_circle_glow(int center_x, int center_y, int inner_radius, int outer_ra
 }
 
 void
-draw_gauge(int center_x, int center_y, int value, int max_value, int tick_min_value, int tick_max_value, int tick_step,
-           const std::string &label) {
+draw_gauge(int center_x, int center_y, int value, int max_value, int tick_min_value, int tick_max_value, int tick_step) {
     // outer ring
     draw_circle_glow(center_x, center_y, RADIUS, RADIUS + 20, BLUE_PURPLE);
 
@@ -134,10 +132,10 @@ draw_gauge(int center_x, int center_y, int value, int max_value, int tick_min_va
     int y = center_y + (RADIUS - 95) * sin(angle * M_PI / 180.0);
     int x2 = center_x + RADIUS * cos(angle * M_PI / 180.0);
     int y2 = center_y + RADIUS * sin(angle * M_PI / 180.0);
-    thickLineRGBA(renderer, x, y, x2, y2, 8, BLUE_PURPLE.r, BLUE_PURPLE.g, BLUE_PURPLE.b, 254);
+    thickLineRGBA(renderer, x, y, x2, y2, 8, BLUE_PURPLE.r, BLUE_PURPLE.g, BLUE_PURPLE.b, 255);
 
     // inner ring
-    aacircleRGBA(renderer, center_x, center_y, 130, BLUE_PURPLE.r, BLUE_PURPLE.g, BLUE_PURPLE.b, 254);
+    aacircleRGBA(renderer, center_x, center_y, 130, BLUE_PURPLE.r, BLUE_PURPLE.g, BLUE_PURPLE.b, 255);
     draw_circle_glow(center_x, center_y, 130, 180, DARK_PURPLE);
 
     // ticks
@@ -151,7 +149,7 @@ draw_gauge(int center_x, int center_y, int value, int max_value, int tick_min_va
         int y1 = center_y + (RADIUS - 30 * 0.8) * sin(angle * M_PI / 180.0);
         int x2 = center_x + RADIUS * cos(angle * M_PI / 180.0);
         int y2 = center_y + RADIUS * sin(angle * M_PI / 180.0);
-        aalineRGBA(renderer, x1, y1, x2, y2, tick_color.r, tick_color.g, tick_color.b, 254);
+        aalineRGBA(renderer, x1, y1, x2, y2, tick_color.r, tick_color.g, tick_color.b, 255);
 
         // inbetween ticks
         if (i < tick_max_value) {
@@ -161,14 +159,14 @@ draw_gauge(int center_x, int center_y, int value, int max_value, int tick_min_va
             int in_between_y1 = center_y + (RADIUS - 20 * 0.8) * sin(in_between_angle * M_PI / 180.0);
             int in_between_x2 = center_x + RADIUS * cos(in_between_angle * M_PI / 180.0);
             int in_between_y2 = center_y + RADIUS * sin(in_between_angle * M_PI / 180.0);
-            aalineRGBA(renderer, in_between_x1, in_between_y1, in_between_x2, in_between_y2, in_between_tick_color.r, in_between_tick_color.g, in_between_tick_color.b, 254);
+            aalineRGBA(renderer, in_between_x1, in_between_y1, in_between_x2, in_between_y2, in_between_tick_color.r, in_between_tick_color.g, in_between_tick_color.b, 255);
         }
 
         // tick label
         float text_angle = static_cast<float>(i - tick_min_value) / (tick_max_value - tick_min_value) * 270 - 225;
         int text_x = center_x + (RADIUS - 60) * cos(text_angle * M_PI / 180.0);
         int text_y = center_y + (RADIUS - 60) * sin(text_angle * M_PI / 180.0);
-        draw_text(std::to_string(i), text_x - 20, text_y - 10, small_font, DARK_GRAY);
+        draw_text(std::to_string(i), text_x - 10, text_y - 10, small_font, DARK_GRAY);
     }
 
     // value
@@ -191,8 +189,8 @@ void main_loop() {
         SDL_SetRenderDrawColor(renderer, background_color.r, background_color.g, background_color.b, 255);
         SDL_RenderClear(renderer);
 
-        draw_gauge(300, 300, speed, 280, 0, 280, 20, "");
-        draw_gauge(900, 300, rpm, 8000, 0, 8000, 1000, "");
+        draw_gauge(300, 300, speed, 280, 0, 280, 20);
+        draw_gauge(900, 300, rpm, 8000, 0, 8, 1);
 
         SDL_RenderPresent(renderer);
 //        SDL_Delay(16); // Cap frame rate to ~60 FPS
